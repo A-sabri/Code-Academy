@@ -6,7 +6,7 @@ const app = express();
 const cors = require('cors');
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use((error, req, res, next) => {
     console.log('This is the rejected field ->', error);
