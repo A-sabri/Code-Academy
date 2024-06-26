@@ -13,7 +13,6 @@ const authCtrl = require('../controllers/auth.controller.js');
 //auth
 router.post('/register', authCtrl.register);
 router.post('/login', authCtrl.login);
-router.get('/logout', authCtrl.logout );
 
 //user display
 router.get('/', auth, userCtrl.getAllUsers);

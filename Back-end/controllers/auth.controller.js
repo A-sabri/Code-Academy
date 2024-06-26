@@ -52,8 +52,3 @@ exports.login = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-
-//se déconecter 
-exports.logout = (req, res, next) => {
-    
-};
