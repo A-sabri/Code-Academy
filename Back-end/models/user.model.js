@@ -11,9 +11,7 @@ const userSchema = mongoose.Schema({
     isAdmin : {type : Boolean, default: false}
 
   },
-
   { timestamps: true },
-  
 );
 
 //plugin pour les mots de pass
