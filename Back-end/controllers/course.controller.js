@@ -1,9 +1,6 @@
 const CourseModel = require('../models/course.model.js');
 const UserModel = require('../models/user.model.js');
 const ObjectID = require('mongoose').Types.ObjectId;
-const courseData =  req.body;
-const courseId = req.params.id;
-
 
 //retourne tout les coure 
 exports.getAllCourses = (req, res, next) => {
@@ -35,9 +32,9 @@ exports.createCourse = (req, res, next) => {
     }
     
     const course = new CourseModel({
-        name: courseData.name,
-        description: courseData.description,
-        nbOfStudent: courseData.nbOfStudent,
+        name: req.body.name,
+        description: req.body.description,
+        nbOfStudent: req.body.nbOfStudent,
         picture: imageUrl,
         studentIds: [],
     });
@@ -49,7 +46,7 @@ exports.createCourse = (req, res, next) => {
 
 //modification d'un coure
 exports.updateCourse = (req, res, next) => {
-    CourseModel.findByIdAndUpdate(courseId, courseData, { new: true })
+    CourseModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
         .then(updatedCourse => {
             if (!updatedCourse) {
                 return res.status(404).json({ error: 'Coure non existant' });
@@ -61,7 +58,7 @@ exports.updateCourse = (req, res, next) => {
 
 //suprimer un coure
 exports.deleteCourse = (req, res, next) => {
-    CourseModel.findByIdAndDelete(courseId)
+    CourseModel.findByIdAndDelete(req.params.id)
         .then(deletedCourse => {
             if (!deletedCourse) {
                 return res.status(404).json({ error: 'Course not found' });
