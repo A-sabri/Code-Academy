@@ -15,7 +15,7 @@ router.post('/register', authCtrl.register);
 router.post('/login', authCtrl.login);
 
 //user display
-router.get('/', auth, userCtrl.getAllUsers);
+router.get('/', userCtrl.getAllUsers);
 router.get('/:id', auth, userCtrl.getUserById);
 router.post('/', auth, userCtrl.createUser);
 router.put('/:id', auth, multer, userCtrl.updateUser);
