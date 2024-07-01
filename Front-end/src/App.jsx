@@ -1,33 +1,27 @@
+// src/App.js
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import SignUpForm from './components/SignUpForm';
+import LoginForm from './components/LoginForm';
 import Courses from './components/Courses';
-
+//import CourseDetails from './components/CourseDetails';
+//import UserProfile from './components/UserProfile';
 
 const App = () => {
   return (
-    <div className="container mt-4">
-      <div className="row">
-        <div className="col-md-3">
-          <div className="card">
-            <div className="card-body">
-              <h3 className="card-title">Student Information</h3>
-             
-
-
-            </div>
-          </div>
-        </div>
-        <div className="col-md-8">
-        <div className="card">
-            <div className="card-body">
-              <h3 className="card-title">Courses</h3>
-            </div>
-          </div>
-          
-          <Courses/>
-        </div>
-      </div>
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Courses />} />
+        <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/login" element={<LoginForm />} />
+      </Routes>
+    </Router>
   );
 };
 
 export default App;
+
+//<Route path="/courses/:id" element={<CourseDetails />} />
+//<Route path="/profile" element={<UserProfile />} />

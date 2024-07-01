@@ -20,3 +20,9 @@ export const deleteCourse = (id) => axios.delete(`${API_URL}/courses/${id}`);
 // Enrollments API
 export const addStudentToCourse = (studentId, courseId) => axios.put(`${API_URL}/${courseId}/users/${studentId}`);
 export const removeStudentFromCourse = (studentId, courseId) => axios.delete(`${API_URL}/${courseId}/users/${studentId}`);
+
+// Auth API
+export const register = (user) => axios.post(`${API_URL}/users/register`, user);
+export const login = (user) => axios.post(`${API_URL}/users/login`, user);
+
+

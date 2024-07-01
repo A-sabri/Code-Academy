@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCourses, addStudentToCourse } from '../service/api';
+import { getAllCourses } from '../service/api';
 import Course from './Course';
 
-const Courses = ({ studentId }) => {
+const Courses = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -11,27 +11,10 @@ const Courses = ({ studentId }) => {
     .catch(error => console.error('Error fetching courses:', error));
   }, []);
 
-  /*
-  const joinCourse = async (courseId) => {
-    try {
-      await addStudentToCourse(studentId, courseId);
-      setCourses(prevCourses =>
-        prevCourses.map(course =>
-          course.id === courseId
-            ? { ...course, nbOfStudent: course.nbOfStudent + 1 }
-            : course
-        )
-      );
-    } catch (error) {
-      console.error('Error joining course:', error);
-    }
-  };
-  */
-
   return (
-    <div>
+    <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
       {courses.map(course => (
-        <Course key={course.id} course={course} /*joinCourse={joinCourse}*/ />
+        <Course key={course.id} course={course} />
       ))}
     </div>
   );
