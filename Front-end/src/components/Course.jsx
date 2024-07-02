@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllUsers, addStudentToCourse } from '../service/api';
+import { getAllUsers, addStudentToCourse, removeStudentFromCourse } from '../service/api';
 
 const Course = ({ course }) => {
 

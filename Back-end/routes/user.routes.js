@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 //importaion des middleware
-const auth = require('../middleware/auth.middlware.js');
+//const auth = require('../middleware/auth.middlware.js');
 const multer = require('../middleware/multer-config.user.js');
 
 //importaion des controller 
@@ -16,9 +16,9 @@ router.post('/login', authCtrl.login);
 
 //user display
 router.get('/', userCtrl.getAllUsers);
-router.get('/:id', auth, userCtrl.getUserById);
+router.get('/:id', userCtrl.getUserById);
 router.post('/', userCtrl.createUser);
-router.put('/:id', auth, multer, userCtrl.updateUser);
-router.delete('/:id', auth, userCtrl.deleteUser);
+router.put('/:id', multer, userCtrl.updateUser);
+router.delete('/:id', userCtrl.deleteUser);
 
 module.exports = router;

@@ -89,18 +89,12 @@ exports.addStudentToCourse = (req, res, next) => {
 };
 
 exports.removeStudentFromCourse = (req, res, next) => {
-    Promise.all([
-        CourseModel.findById(req.params.courseId),
-        UserModel.findById(req.params.studentId)
-    ])
-    .then(([course, student]) => {
-        if (!course || !student) {
-            throw new Error('Course or student not found');
-        }
-        course.studentIds = course.studentIds.filter(id => id.toString() !== req.params.studentId);
-        course.nbOfStudent = course.studentIds.length;
-        return course.save();
-    })
+    const { studentId } = req.body;
+    CourseModel.findByIdAndUpdate(
+        req.params.id,
+        { $pull: { studentIds: studentId }, $inc: { nbOfStudent: -1 } },
+        { new: true }
+    )
     .then(course => res.status(200).json(course))
-    .catch(error => res.status(400).json({ error: error.message }));
+    .catch(error => res.status(400).json({ error }));
 };

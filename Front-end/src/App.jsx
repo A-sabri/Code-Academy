@@ -2,6 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import SignUpForm from './components/SignUpForm';
 import LoginForm from './components/LoginForm';
 import Courses from './components/Courses';
@@ -11,12 +12,17 @@ import Courses from './components/Courses';
 const App = () => {
   return (
     <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Courses />} />
-        <Route path="/signup" element={<SignUpForm />} />
-        <Route path="/login" element={<LoginForm />} />
-      </Routes>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Courses />} />
+            <Route path="/register" element={<SignUpForm />} />
+            <Route path="/login" element={<LoginForm />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 };

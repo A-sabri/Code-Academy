@@ -1,25 +1,103 @@
 // src/components/Header.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { getUserById } from '../service/api';
 
 const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState([]);
+  const navigate = useNavigate();
+  const menuRef = useRef(null);
+  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('userId'); 
+  
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    navigate('/login');
+  };
+  
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+
+      if (token && userId) {
+        try {
+          const response = await getUserById(userId);
+          setUser(response.data);
+        } catch (error) {
+          console.error('Failed to fetch user data:', error);
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+    
+  
+
   return (
-    <header className="bg-gray-800 text-white">
-      <div className="container mx-auto flex justify-between items-center p-4">
-        <div className="text-lg font-bold">
-          <Link to="/">
-            <img src="/Code-Academy.jpg" alt="Logo" className="h-8" />
-          </Link>
-        </div>
-        <nav className="flex space-x-4">
-          <Link to="/signup" className="hover:text-gray-400">
-            Sign Up
-          </Link>
-          <Link to="/login" className="hover:text-gray-400">
-            Log In
-          </Link>
-        </nav>
+    <header className="bg-blue-500 text-white p-4 flex justify-between items-center">
+      <div className="text-lg font-bold">
+        <Link to="/">
+          <img src="/Code-Academy.jpg" alt="Logo" className="w-20 h-20 rounded-full cursor-pointer" />
+        </Link>
       </div>
+      <nav>
+        <ul className="flex space-x-4 items-center">
+          {token ? (
+            <li className="relative flex items-center" ref={menuRef}>
+              <div className="flex flex-col items-start mr-4">
+                <span className="text-lg">Bienvenue , <span className="font-bold text-gray-800">{user.name}</span></span>
+              </div>
+              <img 
+                src="/random-user.png" 
+                alt="Avatar" 
+                className="w-10 h-10 rounded-full cursor-pointer"
+                onClick={toggleMenu}
+              />
+              {menuOpen && (
+                <div className="absolute right-0 mt-44 w-48 bg-white text-black rounded-md shadow-lg py-2">
+                  <Link to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</Link>
+                  <Link to="/courses" className="block px-4 py-2 hover:bg-gray-200">Courses</Link>
+                  <button 
+                    onClick={handleLogout} 
+                    className="w-full text-left block px-4 py-2 hover:bg-gray-200"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              )}
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link to="/register" className="bg-green-500 px-4 py-2 rounded hover:bg-green-700">Sign Up</Link>
+              </li>
+              <li>
+                <Link to="/login" className="bg-blue-700 px-4 py-2 rounded hover:bg-blue-900">Log In</Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
     </header>
   );
 };
