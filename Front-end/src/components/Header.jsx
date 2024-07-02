@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserById } from '../service/api';
+import Avatar from './Avatar';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,12 +68,7 @@ const Header = () => {
               <div className="flex flex-col items-start mr-4">
                 <span className="text-lg">Bienvenue , <span className="font-bold text-gray-800">{user.name}</span></span>
               </div>
-              <img 
-                src="/random-user.png" 
-                alt="Avatar" 
-                className="w-10 h-10 rounded-full cursor-pointer"
-                onClick={toggleMenu}
-              />
+              <Avatar onClick={toggleMenu}/>
               {menuOpen && (
                 <div className="absolute right-0 mt-44 w-48 bg-white text-black rounded-md shadow-lg py-2">
                   <Link to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</Link>

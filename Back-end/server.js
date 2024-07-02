@@ -3,6 +3,7 @@ require('dotenv').config({path: './config/.env'})
 require('./config/db.js');
 const userRoutes = require('./routes/user.routes.js');
 const courseRoutes = require('./routes/course.routes.js');
+const path = require('path');
 
 const app = express();
 const cors = require('cors');
@@ -16,6 +17,7 @@ app.use((error, req, res, next) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //Server
 app.listen(process.env.PORT , () => {

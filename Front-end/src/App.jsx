@@ -7,7 +7,7 @@ import SignUpForm from './components/SignUpForm';
 import LoginForm from './components/LoginForm';
 import Courses from './components/Courses';
 //import CourseDetails from './components/CourseDetails';
-//import UserProfile from './components/UserProfile';
+import UserProfile from './components/UserProfile';
 
 const App = () => {
   return (
@@ -19,6 +19,7 @@ const App = () => {
             <Route path="/" element={<Courses />} />
             <Route path="/register" element={<SignUpForm />} />
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </main>
         <Footer />
@@ -30,4 +31,3 @@ const App = () => {
 export default App;
 
 //<Route path="/courses/:id" element={<CourseDetails />} />
-//<Route path="/profile" element={<UserProfile />} />
