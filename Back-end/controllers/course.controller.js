@@ -16,7 +16,7 @@ exports.getCourseById = (req, res, next) => {
         .populate('studentIds')
         .then(course => {
             if (!course) {
-                return res.status(404).json({ error: 'Coure non existant' });
+                return res.status(404).json({ error: 'Course not found' });
             }
             res.status(200).json(course);
         })
@@ -40,7 +40,7 @@ exports.createCourse = (req, res, next) => {
     });
   
     course.save()
-    .then(() => { res.status(201).json({message: 'coure enregistré !'})})
+    .then(() => { res.status(201).json({message: 'Course registerd !'})})
     .catch(error => { res.status(400).json( { error })})
 };
 
@@ -49,7 +49,7 @@ exports.updateCourse = (req, res, next) => {
     CourseModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
         .then(updatedCourse => {
             if (!updatedCourse) {
-                return res.status(404).json({ error: 'Coure non existant' });
+                return res.status(404).json({ error: 'Course not found' });
             }
             res.status(200).json(updatedCourse);
         })
@@ -63,28 +63,28 @@ exports.deleteCourse = (req, res, next) => {
             if (!deletedCourse) {
                 return res.status(404).json({ error: 'Course not found' });
             }
-            res.status(200).json({ message: 'Coure suprimer' });
+            res.status(200).json({ message: 'Course deleted' });
         })
         .catch(error => res.status(400).json({ error }));
 };
 
 exports.addStudentToCourse = (req, res, next) => {
-    Promise.all([
-        CourseModel.findById(req.params.courseId),
-        UserModel.findById(req.params.studentId)
-    ])
-    .then(([course, student]) => {
-        if (!course || !student) {
-            throw new Error('Course or student not found');
+
+    const { courseId } = req.params;
+    const { studentId } = req.body;
+   
+    CourseModel.findById(courseId)
+    .then(course => {
+        if (!course ) {
+            return res.status(404).json({ error: 'Course not found' });
         }
-        if (!course.studentIds.includes(req.params.studentId)) {
-            course.studentIds.push(req.params.studentId);
-            course.nbOfStudent = course.studentIds.length;
-            return course.save();
-        }
-        return course;
+       
+        course.studentIds.push(studentId);
+        course.nbOfStudent = course.studentIds.length;
+        
+        return course.save();   
     })
-    .then(course => res.status(200).json(course))
+    .then(() => res.status(200).json({ message: 'Student added to course' }))
     .catch(error => res.status(400).json({ error: error.message }));
 };
 

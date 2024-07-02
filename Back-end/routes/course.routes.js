@@ -15,7 +15,7 @@ router.get('/:id', courseCtrl.getCourseById);
 router.post('/', auth, multer, courseCtrl.createCourse);
 router.put('/:id', auth, multer, courseCtrl.updateCourse);
 router.delete('/:id', auth, courseCtrl.deleteCourse);
-router.put('/:courseId/users/:studentId', auth, courseCtrl.addStudentToCourse);
+router.post('/:courseId/join', courseCtrl.addStudentToCourse);
 router.delete('/:courseId/users/:studentId', auth, courseCtrl.removeStudentFromCourse);
 
 module.exports = router;
