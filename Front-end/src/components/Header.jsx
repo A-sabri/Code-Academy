@@ -6,12 +6,9 @@ import Avatar from './Avatar';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState([]);
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('userId'); 
-  
   
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -22,7 +19,21 @@ const Header = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   
+  /*
   useEffect(() => {
     const fetchUser = async () => {
 
@@ -38,20 +49,7 @@ const Header = () => {
 
     fetchUser();
   }, []);
-
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setMenuOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-    
+  */
   
 
   return (
@@ -65,9 +63,6 @@ const Header = () => {
         <ul className="flex space-x-4 items-center">
           {token ? (
             <li className="relative flex items-center" ref={menuRef}>
-              <div className="flex flex-col items-start mr-4">
-                <span className="text-lg">Bienvenue , <span className="font-bold text-gray-800">{user.name}</span></span>
-              </div>
               <Avatar onClick={toggleMenu}/>
               {menuOpen && (
                 <div className="absolute right-0 mt-44 w-48 bg-white text-black rounded-md shadow-lg py-2">

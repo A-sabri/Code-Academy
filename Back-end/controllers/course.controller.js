@@ -74,14 +74,20 @@ exports.addStudentToCourse = (req, res, next) => {
     const { studentId } = req.body;
    
     CourseModel.findById(courseId)
-    .then(course => {
-        if (!course ) {
-            return res.status(404).json({ error: 'Course not found' });
+    Promise.all([
+        CourseModel.findById(courseId),
+        UserModel.findById(studentId)
+    ])
+    .then(([course, student]) => {
+        if (!course || !student) {
+            return res.status(404).json({ error: 'Course or student not found' });
         }
        
         course.studentIds.push(studentId);
+        student.courseIds.push(courseId);
         course.nbOfStudent = course.studentIds.length;
         
+        student.save();
         return course.save();   
     })
     .then(() => res.status(200).json({ message: 'Student added to course' }))

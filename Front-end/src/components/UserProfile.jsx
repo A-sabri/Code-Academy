@@ -4,9 +4,15 @@ import { getUserById, getAllCourses } from '../service/api'; // Assurez-vous que
 import Avatar from './Avatar';
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
+  const [toggleList, setToggleList] = useState(false);
+  const [user, setUser] = useState([]);
   const [courses, setCourses] = useState([]);
   const userId = localStorage.getItem('userId');
+
+  const toggleCoursesList = () => {
+    setToggleList(!toggleList);
+    
+};
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,7 +37,9 @@ const UserProfile = () => {
     fetchCourses();
   }, [userId]);
 
-  if (!user) return <div>Loading...</div>;
+    const userCoursesIds = user.courseIds;
+    const userCourses = courses.filter(course => userCoursesIds.includes(course._id));
+    
 
   return (
     <div className="container mx-auto p-6">
@@ -44,21 +52,29 @@ const UserProfile = () => {
           </div>
         </div>
         <div className="mt-6">
-          <h3 className="text-xl font-semibold">My Courses</h3>
+          <button 
+            className="text-blue-500 hover:underline mb-4"
+            onClick={toggleCoursesList}
+          >
+            My Courses
+          </button>
           <ul className="mt-4">
-            {courses.map(course => (
-              <li key={course.id} className="border-b py-2">
-                <div className="flex justify-between">
-                  <span className="text-lg">{course.title}</span>
-                  <span className="text-gray-600">{course.description}</span>
-                </div>
-              </li>
-            ))}
+            {toggleList && (
+              <div className="course-list">
+                <ul>
+                  {userCourses.map(course => (
+                    <li key={course._id}>
+                      {course.name} 
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </ul>
         </div>
       </div>
-    </div>
-  );
+  </div>
+);
 };
 
 export default UserProfile;
