@@ -1,53 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getAllUsers, addStudentToCourse, removeStudentFromCourse, getCourseById } from '../service/api';
+import React, { useState } from 'react';
+import { getAllUsers, addStudentToCourse, removeStudentFromCourse } from '../service/api';
 import Avatar from './Avatar';
 
-const Course = () => {
-    const { courseId } = useParams();
-    const [course, setCourse] = useState(null);
+const CourseCard = ({ course }) => {
+
     const [toggleList, setToggleList] = useState(false);
-    const [studentList, setStudentList] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [updatedCourse, setUpdatedCourse] = useState(course);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [modalType, setModalType] = useState(''); // 'success' or 'error'
-    
+
     const studentId = localStorage.getItem('userId');
-    
-    useEffect(() => {
-        getCourseById(courseId)
-        .then(response => {
-            setStudentList(response.data.studentIds);
-            setCourse(response.data);
-        })  
-        .catch(error => console.error('Error fetching course', error));
-    }, [courseId]);
 
-    console.log(studentList);
-
-    const joinCourse = () => {
+    const joinCourse = (courseId) => {
         addStudentToCourse(studentId, courseId)
-            .then(() => {
-                setStudentList(prevIds => [...prevIds, studentId]);
-                setModalMessage('Successfully joined the course!');
-                setModalType('success');
-                setModalIsOpen(true);
-            })
-            .catch(error => {    
-                console.error('Error joining course:', error);
-                setModalMessage('Failed to join the course.');
-                setModalType('error');
-                setModalIsOpen(true);
-            });
+        .then(() => {    
+            setUpdatedCourse(prevCourse => ({
+                ...prevCourse,
+                studentIds: [...prevCourse.studentIds, studentId],
+                nbOfStudent: prevCourse.nbOfStudent + 1
+            }));
+
+            setModalMessage('Successfully joined the course!');
+            setModalType('success');
+            setModalIsOpen(true);
+        })
+        .catch(error => {    
+            console.error('Error joining course:', error);
+            setModalMessage('Failed to join the course.');
+            setModalType('error');
+            setModalIsOpen(true);
+        });
     };
 
-    const leaveCourse = async () => {
+    const leaveCourse = async (courseId) => {
         try {
             await removeStudentFromCourse(studentId, courseId);
-            setStudentList(prevIds => prevIds.filter(id => id !== studentId));
+
+            // Mise à jour du nombre d'étudiants localement
+            setUpdatedCourse(prevCourse => ({
+                ...prevCourse,
+                studentIds: prevCourse.studentIds.filter(id => id !== studentId),
+                nbOfStudent: prevCourse.nbOfStudent - 1
+            }));
+
             setModalMessage('Successfully left the course!');
             setModalType('success');
             setModalIsOpen(true);
+            window.location.reload();
         } catch (error) {
             console.error('Error leaving course:', error);
             setModalMessage('Failed to leave the course.');
@@ -58,23 +59,30 @@ const Course = () => {
 
     const toggleStudentList = () => {
         setToggleList(!toggleList);
+        getUsers();
+    };
+    
+    const getUsers = async () => {
+      getAllUsers()
+      .then(response => setUsers(response.data))
+      .catch(error => console.error('Error fetching students:', error));
     };
 
-    let isUserEnrolled = studentList.includes(studentId);
+    const studentInCourse = updatedCourse.studentIds;
+    let studentList = users.filter(user => studentInCourse.includes(user._id));
+    const isUserEnrolled = studentInCourse.includes(studentId);
     
     const closeModal = () => {
         setModalIsOpen(false);
     };
 
-    if (!course) return <div>Loading...</div>;
-
     return (
-        <div className="max-w-4xl mx-auto my-8 p-4 bg-white shadow-md rounded-lg">
+        <div className="m-5 bg-white shadow-lg rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 relative z-10">
             <div className="flex flex-col items-center">
-                <img src="/Code-Academy.jpg" alt="Course" className="w-full h-64 object-cover rounded-lg" />
-                <h1 className="text-3xl font-bold mt-4">{course.name}</h1>
+                <img src="/code-academy-logo.png" alt="Course" className="w-full h-40 object-cover border border-gray-300 rounded-lg" />
+                <h5 className="text-lg font-bold mb-2">{course.name}</h5>
             </div>
-            <div className="flex mt-8">
+            <div className="flex mt-8 p-1.5">
                 <div className="w-2/3 pr-4">
                     <h2 className="text-2xl font-semibold mb-4">Description</h2>
                     <p className="text-gray-700">{course.description}</p>
@@ -84,19 +92,19 @@ const Course = () => {
                         {isUserEnrolled ? (
                             <button
                                 className="bg-red-500 text-white w-full py-2 rounded hover:bg-red-600 mb-4"
-                                onClick={leaveCourse}
+                                onClick={() => leaveCourse(course._id)}
                             >
                                 Leave
                             </button>
                         ) : (
                             <button
                                 className="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600 mb-4"
-                                onClick={joinCourse}
+                                onClick={() => joinCourse(course._id)}
                             >
                                 Join
                             </button>
                         )}
-                        <p className="mb-4">Number of students: {studentList.length}</p>
+                        <p className="mb-4">Number of students: {updatedCourse.nbOfStudent}</p>
                         <button 
                             className="text-blue-500 hover:underline"
                             onClick={toggleStudentList}
@@ -118,7 +126,7 @@ const Course = () => {
                     </div>
                 </div>
             </div>
-
+            
             {/* Modal */}
             {modalIsOpen && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -139,5 +147,6 @@ const Course = () => {
     );
 };
 
-export default Course;
+export default CourseCard;
+
 

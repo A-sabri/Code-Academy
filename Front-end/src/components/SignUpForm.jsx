@@ -36,8 +36,11 @@ const SignUpForm = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-5">Sign Up</h2>
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md">
+        <div className="flex justify-center items-center">
+          <img src="/code-academy.svg" alt="Logo" className="w-28 h-28 rounded-full cursor-pointer" />
+        </div>
+        <h2 className="text-2xl font-bold mb-5">Sign Up</h2>
         <div className="mb-4">
           <label htmlFor="name" className="block text-gray-700">Name</label>
           <input

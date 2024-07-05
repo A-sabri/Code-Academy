@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:5000/api';
 
 // Students API
 export const getAllUsers = () => axios.get(`${API_URL}/users`);
-export const getUserById = (id) => axios.get(`${API_URL}/users/${id}`);
+export const getUserById = (userId) => axios.get(`${API_URL}/users/${userId}`);
 export const createUser = (user) => axios.post(`${API_URL}/users`, user);
 export const updateUser = (id, user) => axios.put(`${API_URL}/users/${id}`, user);
 export const deleteUser = (id) => axios.delete(`${API_URL}/users/${id}`);
@@ -19,7 +19,8 @@ export const deleteCourse = (id) => axios.delete(`${API_URL}/courses/${id}`);
 
 // Enrollments API
 export const addStudentToCourse = (studentId, courseId) => axios.post(`${API_URL}/courses/${courseId}/join`, { studentId });
-export const removeStudentFromCourse = (studentId, courseId) => axios.put(`${API_URL}/courses/${courseId}/removeStudent`, { studentId });
+export const removeStudentFromCourse = (studentId, courseId) => axios.delete(`${API_URL}/courses/${courseId}/removeStudent`, { data: { studentId } });
+
 
 // Auth API
 export const register = (user) => axios.post(`${API_URL}/users/register`, user);

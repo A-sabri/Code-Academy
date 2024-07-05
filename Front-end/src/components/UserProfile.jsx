@@ -45,15 +45,15 @@ const UserProfile = () => {
     <div className="container mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex items-center space-x-4">
-          <Avatar size = 'w-20 h-20'/>
+          <Avatar size = 'w-48 h-48'/>
           <div>
-            <h2 className="text-2xl font-bold">{user.name}</h2>
+            <h2 className="text-4xl font-bold">{user.name}</h2>
             <p className="text-gray-600">{user.email}</p>
           </div>
         </div>
         <div className="mt-6">
           <button 
-            className="text-blue-500 hover:underline mb-4"
+            className="text-2xl text-blue-500 hover:underline mb-4"
             onClick={toggleCoursesList}
           >
             My Courses

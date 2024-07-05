@@ -5,9 +5,13 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import SignUpForm from './components/SignUpForm';
 import LoginForm from './components/LoginForm';
-import Courses from './components/Courses';
-//import CourseDetails from './components/CourseDetails';
+import CoursesDisplay from './components/CoursesDisplay';
+import Course from './components/Course';
 import UserProfile from './components/UserProfile';
+import UserCourses from './components/UserCourses';
+
+
+
 
 const App = () => {
   return (
@@ -16,10 +20,12 @@ const App = () => {
         <Header />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Courses />} />
+            <Route path="/" element={<CoursesDisplay />} />
             <Route path="/register" element={<SignUpForm />} />
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/courses/:courseId" element={<Course />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/my-courses" element={<UserCourses />} />
           </Routes>
         </main>
         <Footer />
@@ -29,5 +35,3 @@ const App = () => {
 };
 
 export default App;
-
-//<Route path="/courses/:id" element={<CourseDetails />} />

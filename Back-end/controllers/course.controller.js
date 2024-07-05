@@ -25,10 +25,9 @@ exports.getCourseById = (req, res, next) => {
 
 //crée un coure
 exports.createCourse = (req, res, next) => {
-
     let imageUrl = '' ;
     if(req.file && req.file.filename) {
-    imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+        imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     }
     
     const course = new CourseModel({
@@ -40,7 +39,7 @@ exports.createCourse = (req, res, next) => {
     });
   
     course.save()
-    .then(() => { res.status(201).json({message: 'Course registerd !'})})
+    .then(() => { res.status(201).json({message: 'Course registered !'})})
     .catch(error => { res.status(400).json( { error })})
 };
 
@@ -68,39 +67,66 @@ exports.deleteCourse = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
-exports.addStudentToCourse = (req, res, next) => {
-
+exports.addStudentToCourse = async (req, res, next) => {
     const { courseId } = req.params;
     const { studentId } = req.body;
    
-    CourseModel.findById(courseId)
-    Promise.all([
-        CourseModel.findById(courseId),
-        UserModel.findById(studentId)
-    ])
-    .then(([course, student]) => {
+    try {
+        const course = await CourseModel.findById(courseId);
+        const student = await UserModel.findById(studentId);
+
         if (!course || !student) {
             return res.status(404).json({ error: 'Course or student not found' });
         }
-       
-        course.studentIds.push(studentId);
-        student.courseIds.push(courseId);
-        course.nbOfStudent = course.studentIds.length;
-        
-        student.save();
-        return course.save();   
-    })
-    .then(() => res.status(200).json({ message: 'Student added to course' }))
-    .catch(error => res.status(400).json({ error: error.message }));
+
+        if (!course.studentIds.includes(studentId)) {
+            course.studentIds.push(studentId);
+            student.courseIds.push(courseId);
+            course.nbOfStudent = course.studentIds.length;
+
+            await student.save();
+            await course.save();
+
+            return res.status(200).json({ message: 'Student added to course' });
+        } else {
+            return res.status(400).json({ message: 'Student already in course' });
+        }
+    } catch (error) {
+        console.error('Error adding student to course:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
 };
 
-exports.removeStudentFromCourse = (req, res, next) => {
+exports.removeStudentFromCourse = async (req, res, next) => {
+    const { courseId } = req.params;
     const { studentId } = req.body;
-    CourseModel.findByIdAndUpdate(
-        req.params.id,
-        { $pull: { studentIds: studentId }, $inc: { nbOfStudent: -1 } },
-        { new: true }
-    )
-    .then(course => res.status(200).json(course))
-    .catch(error => res.status(400).json({ error }));
+   
+    try {
+        const course = await CourseModel.findById(courseId);
+        const student = await UserModel.findById(studentId);
+
+        if (!course || !student) {
+            return res.status(404).json({ error: 'Course or student not found' });
+        }
+
+        if (course.studentIds.includes(studentId)) {
+            course.studentIds = course.studentIds.filter(id => id.toString() !== studentId);
+            student.courseIds = student.courseIds.filter(id => id.toString() !== courseId);
+            course.nbOfStudent = course.studentIds.length;
+
+            await student.save();
+            await course.save();
+
+            return res.status(200).json({ message: 'Student removed from course' });
+        } else {
+            return res.status(400).json({ message: 'Student not in course' });
+        }
+    } catch (error) {
+        console.error('Error removing student from course:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
 };

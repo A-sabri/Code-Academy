@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getAllCourses } from '../service/api';
-import Course from './Course';
+import CourseCard from './CourseCard';
 
-const Courses = () => {
+const CoursesDisplay = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -12,12 +12,12 @@ const Courses = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="bg-stone-50 grid grid-cols-1 gap-4 p-7 md:grid-cols-2 lg:grid-cols-3">
       {courses.map(course => (
-        <Course key={course._id} course={course} />
+        <CourseCard key={course._id} course={course} />
       ))}
     </div>
   );
 };
 
-export default Courses;
+export default CoursesDisplay;
