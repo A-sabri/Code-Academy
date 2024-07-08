@@ -37,8 +37,8 @@ const UserProfile = () => {
     fetchCourses();
   }, [userId]);
 
-    const userCoursesIds = user.courseIds;
-    const userCourses = courses.filter(course => userCoursesIds.includes(course._id));
+  const userCoursesIds = user.courseIds;
+  const userCourses = courses.filter(course => userCoursesIds.includes(course._id));
     
 
   return (
