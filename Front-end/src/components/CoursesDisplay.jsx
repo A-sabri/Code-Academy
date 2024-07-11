@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCourses, getUserById, createCourse } from '../service/api';
+import { getAllCourses, createCourse, getUserById } from '../service/api';
 import CourseCard from './CourseCard';
 
 const CoursesDisplay = () => {
   const [courses, setCourses] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
+  const [courseData, setCourseData] = useState({
     name: '',
     description: '',
-    nbOfStudent: 0,
-    picture: ''
+    image: ''
   });
 
   const userId = localStorage.getItem('userId');
@@ -41,64 +40,59 @@ const CoursesDisplay = () => {
     }
   };
 
-  const handleCreateCourse = async (event) => {
-    event.preventDefault();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCourseData({
+      ...courseData,
+      [name]: value
+    });
+  };
 
-    const newCourse = {
-      name: formData.name,
-      description: formData.description,
-      nbOfStudent: formData.nbOfStudent,
-      picture: formData.picture,
-      studentIds: []
-    };
+  const handleFileChange = (e) => {
+    setCourseData({
+      ...courseData,
+      image: e.target.files[0]
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', courseData.name);
+    formData.append('description', courseData.description);
+    formData.append('image', courseData.image);
 
     try {
-      await createCourse(newCourse);
-      fetchCourses(); // Rafraîchit la liste des cours après la création
-      setShowForm(false); // Ferme le formulaire après la création
-      setFormData({
-        name: '',
-        description: '',
-        nbOfStudent: 0,
-        picture: ''
-      });
+      await createCourse(formData);
+      fetchCourses();
+      setShowForm(false);
+      setCourseData({ name: '', description: '', image: '' });
     } catch (error) {
       console.error('Error creating course:', error);
     }
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
   return (
-    <div className="bg-stone-50 p-7">
+    <div>
       {isAdmin && (
-        <div className="mb-4">
-          <button 
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-            onClick={() => setShowForm(true)}
-          >
-            Create Course
-          </button>
-        </div>
+        <button
+          className="bg-green-500 text-white p-2 rounded m-4 hover:scale-105 transition-transform duration-200"
+          onClick={() => setShowForm(!showForm)}
+        >
+          {showForm ? 'Cancel' : 'Create Course'}
+        </button>
       )}
       {showForm && (
-        <form onSubmit={handleCreateCourse} className="mb-4 p-4 bg-white shadow-md rounded">
+        <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-md mb-4">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
               Course Name
             </label>
-            <input 
-              type="text" 
-              id="name" 
-              name="name" 
-              value={formData.name} 
-              onChange={handleChange} 
+            <input
+              type="text"
+              name="name"
+              value={courseData.name}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -107,60 +101,35 @@ const CoursesDisplay = () => {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
               Description
             </label>
-            <textarea 
-              id="description" 
-              name="description" 
-              value={formData.description} 
-              onChange={handleChange} 
+            <textarea
+              name="description"
+              value={courseData.description}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nbOfStudent">
-              Number of Students
-            </label>
-            <input 
-              type="number" 
-              id="nbOfStudent" 
-              name="nbOfStudent" 
-              value={formData.nbOfStudent} 
-              onChange={handleChange} 
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="picture">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
               Picture URL
             </label>
-            <input 
-              type="text" 
-              id="picture" 
-              name="picture" 
-              value={formData.picture} 
-              onChange={handleChange} 
+            <input
+              type="file"
+              name="image"
+              onChange={handleFileChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
             />
           </div>
-          <div className="flex items-center justify-between">
-            <button 
-              type="submit" 
-              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
-            >
-              Create Course
-            </button>
-            <button 
-              type="button" 
-              className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:shadow-outline"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Create Course
+          </button>
         </form>
       )}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className=" grid grid-cols-1 gap-4 p-7 md:grid-cols-2 lg:grid-cols-3">
         {courses.map(course => (
           <CourseCard 
             key={course._id} 

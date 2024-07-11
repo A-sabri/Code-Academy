@@ -1,6 +1,8 @@
 const CourseModel = require('../models/course.model.js');
 const UserModel = require('../models/user.model.js');
 const ObjectID = require('mongoose').Types.ObjectId;
+const fs = require('fs');
+
 
 //retourne tout les coure 
 exports.getAllCourses = (req, res, next) => {
@@ -27,14 +29,14 @@ exports.getCourseById = (req, res, next) => {
 exports.createCourse = (req, res, next) => {
     let imageUrl = '' ;
     if(req.file && req.file.filename) {
-        imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        imageUrl = `${req.protocol}://${req.get('host')}/uploads/course/${req.file.filename}`;
     }
     
     const course = new CourseModel({
         name: req.body.name,
         description: req.body.description,
         nbOfStudent: req.body.nbOfStudent,
-        picture: imageUrl,
+        image: imageUrl,
         studentIds: [],
     });
   
@@ -45,7 +47,12 @@ exports.createCourse = (req, res, next) => {
 
 //modification d'un coure
 exports.updateCourse = (req, res, next) => {
-    CourseModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    const updateData = { ...req.body };
+    if (req.file) {
+        updateData.image = `${req.protocol}://${req.get('host')}/uploads/course/${req.file.filename}`;
+    }
+
+    CourseModel.findByIdAndUpdate(req.params.id, updateData, { new: true })
         .then(updatedCourse => {
             if (!updatedCourse) {
                 return res.status(404).json({ error: 'Course not found' });
@@ -54,6 +61,7 @@ exports.updateCourse = (req, res, next) => {
         })
         .catch(error => res.status(400).json({ error }));
 };
+
 
 //suprimer un coure
 exports.deleteCourse = (req, res, next) => {

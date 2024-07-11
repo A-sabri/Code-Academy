@@ -81,18 +81,27 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
     let studentList = users.filter(user => studentInCourse.includes(user._id));
     const isUserEnrolled = studentInCourse.includes(studentId);
     
-
-    const handleUpdateCourse = () => {
-        updateCourse(course._id, editedCourse)
-        .then(() => {
-            setUpdatedCourse(editedCourse);
-            setEditMode(false);
-            fetchCourses(); // Refresh the courses list
-        })
-        .catch((error) => {
-            console.error('Error updating course:', error);
-        });
+    const handleUpdateCourse = (e) => {
+        e.preventDefault();
+    
+        const formData = new FormData();
+        formData.append('name', editedCourse.name);
+        formData.append('description', editedCourse.description);
+        if (editedCourse.image) {
+            formData.append('image', editedCourse.image);
+        }
+    
+        updateCourse(course._id, formData)
+            .then(() => {
+                setUpdatedCourse({ ...updatedCourse, ...editedCourse });
+                setEditMode(false);
+                fetchCourses(); // Refresh the courses list
+            })
+            .catch((error) => {
+                console.error('Error updating course:', error);
+            });
     };
+    
     
     const handleDeleteCourse = () => {
         deleteCourse(course._id)
@@ -105,9 +114,9 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
     };
 
     return (
-        <div className="m-5 bg-white shadow-lg rounded-lg overflow-hidden p-1.5 relative">
+        <div className="m-5 bg-stone-50 shadow-lg rounded-lg overflow-hidden p-1.5 relative">
             <div className="flex flex-col items-center">
-                <img src="/code-academy-logo.png" alt="Course" className="w-full h-40 object-cover border border-gray-300 rounded-lg" />
+                <img src={course.image} alt="Course" className="w-full h-40 object-cover border border-gray-300 rounded-lg" />
                 <h5 className="text-lg font-bold mb-2">{course.name}</h5>
             </div>
             <div className="flex mt-8 p-1.5">
@@ -177,10 +186,17 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
                         value={editedCourse.name}
                         onChange={(e) => setEditedCourse({ ...editedCourse, name: e.target.value })}
                         className="border p-2 mb-4 w-full "
+                        placeholder="Course Name"
                     />
                     <textarea
                         value={editedCourse.description}
                         onChange={(e) => setEditedCourse({ ...editedCourse, description: e.target.value })}
+                        className="border p-2 mb-4 w-full"
+                        placeholder="Course Description"
+                    />
+                    <input
+                        type="file"
+                        onChange={(e) => setEditedCourse({ ...editedCourse, image: e.target.files[0] })}
                         className="border p-2 mb-4 w-full"
                     />
                     <button

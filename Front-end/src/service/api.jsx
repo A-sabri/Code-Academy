@@ -14,7 +14,11 @@ export const deleteUser = (id) => axios.delete(`${API_URL}/users/${id}`);
 export const getAllCourses = () => axios.get(`${API_URL}/courses`);
 export const getCourseById = (id) => axios.get(`${API_URL}/courses/${id}`);
 export const createCourse = (course) => axios.post(`${API_URL}/courses`, course);
-export const updateCourse = (id, course) => axios.put(`${API_URL}/courses/${id}`, course);
+export const updateCourse = (id, formData) => axios.put(`${API_URL}/courses/${id}`, formData, {
+    headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+});
 export const deleteCourse = (id) => axios.delete(`${API_URL}/courses/${id}`);
 
 // Enrollments API
