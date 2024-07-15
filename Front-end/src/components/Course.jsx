@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getAllUsers, addStudentToCourse, removeStudentFromCourse, getCourseById } from '../service/api';
-import Avatar from './Avatar';
+
 
 const Course = () => {
     const { courseId } = useParams();
@@ -10,7 +10,7 @@ const Course = () => {
     const [studentList, setStudentList] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
-    const [modalType, setModalType] = useState(''); // 'success' or 'error'
+    const [modalType, setModalType] = useState(''); 
     
     const studentId = localStorage.getItem('userId');
     
@@ -108,7 +108,7 @@ const Course = () => {
                                 <ul>
                                     {studentList.map(student => (
                                         <li key={student._id} className="flex items-center mb-2">
-                                            <Avatar userId={student._id} />
+                                            
                                             <span className="ml-2">{student.name}</span>
                                         </li>
                                     ))}

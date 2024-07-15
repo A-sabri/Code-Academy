@@ -9,19 +9,18 @@ const UserCourses = () => {
 
   useEffect(() => {
     getUserById(userId)
-      .then(response => {
-        setUserCourses(response.data.courseIds);
-      })
-      .catch(error => console.error('Error fetching user courses:', error));
+    .then(response => {
+      setUserCourses(response.data.courseIds);
+    })
+    .catch(error => console.error('Error fetching user courses:', error));
   
     getAllCourses()
-      .then(response => {
-        setAllCourses(response.data);
-      })
+    .then(response => {
+      setAllCourses(response.data);
+    })
       .catch(error => console.error('Error fetching all courses:', error));
   }, [userId]);
 
-  // Filtrer les cours de l'utilisateur
   const userCoursesData = allCourses.filter(course => userCourses.includes(course._id));
 
   return (

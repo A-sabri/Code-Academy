@@ -26,7 +26,12 @@ exports.createUser = (req, res, next) => {
 };
 
 exports.updateUser = (req, res, next) => {
-    UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    const updateData = { ...req.body };
+    if (req.file) {
+        updateData.picture = `${req.protocol}://${req.get('host')}/uploads/profil/${req.file.filename}`;
+    }
+
+    UserModel.findByIdAndUpdate(req.params.id, updateData, { new: true })
         .then(updatedUser => {
             if (!updatedUser) {
                 return res.status(404).json({ error: 'User not found' });
@@ -35,6 +40,7 @@ exports.updateUser = (req, res, next) => {
         })
         .catch(error => res.status(400).json({ error }));
 };
+
 
 exports.deleteUser = (req, res, next) => {
     UserModel.findByIdAndDelete(req.params.id)

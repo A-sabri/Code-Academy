@@ -1,23 +1,30 @@
-// src/components/Avatar.js
-import React from 'react';
-import PropTypes from 'prop-types';
-const Avatar = ({ src = '/random-user.png', alt, size = 'w-10 h-10', onClick }) => {
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className={`rounded-full cursor-pointer ${size}`}
-      onClick={onClick}
-      
-    />
-  );
-};
+import React, { useState, useEffect } from 'react';
+import { getUserById } from '../service/api';
 
-Avatar.propTypes = {
-  src: PropTypes.string,
-  alt: PropTypes.string,
-  size: PropTypes.string,
-  onClick: PropTypes.func,
+const Avatar = ({ size }) => {
+    const [user, setUser] = useState({});
+    const userId = localStorage.getItem('userId');
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userResponse = await getUserById(userId);
+                setUser(userResponse.data);
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, [userId]);
+
+    const imageUrl = user.picture;
+
+    return (
+        <div className={`relative ${size}`}>
+            <img src={imageUrl} alt="User Avatar" className="rounded-full object-cover" />
+        </div>
+    );
 };
 
 export default Avatar;

@@ -12,7 +12,6 @@ const Header = () => {
   const isLoggedIn = !!localStorage.getItem('userId');
   const [isAdmin, setIsAdmin] = useState(false);
 
-  
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');

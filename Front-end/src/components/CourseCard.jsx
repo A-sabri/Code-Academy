@@ -41,16 +41,11 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
     const leaveCourse = async (courseId) => {
         try {
             await removeStudentFromCourse(studentId, courseId);
-
-            // Mise à jour du nombre d'étudiants localement
             setUpdatedCourse(prevCourse => ({
                 ...prevCourse,
                 studentIds: prevCourse.studentIds.filter(id => id !== studentId),
                 nbOfStudent: prevCourse.nbOfStudent - 1
             }));
-
-            
-
             setModalMessage('Successfully left the course!');
             setModalType('success');
             setModalIsOpen(true);
@@ -83,34 +78,31 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
     
     const handleUpdateCourse = (e) => {
         e.preventDefault();
-    
         const formData = new FormData();
         formData.append('name', editedCourse.name);
         formData.append('description', editedCourse.description);
         if (editedCourse.image) {
             formData.append('image', editedCourse.image);
         }
-    
         updateCourse(course._id, formData)
-            .then(() => {
-                setUpdatedCourse({ ...updatedCourse, ...editedCourse });
-                setEditMode(false);
-                fetchCourses(); // Refresh the courses list
-            })
-            .catch((error) => {
+        .then(() => {
+            setUpdatedCourse({ ...updatedCourse, ...editedCourse });
+            setEditMode(false);
+            fetchCourses(); 
+        })
+        .catch((error) => {
                 console.error('Error updating course:', error);
-            });
+        });
     };
-    
-    
+     
     const handleDeleteCourse = () => {
         deleteCourse(course._id)
-          .then(() => {
-            fetchCourses(); // Refresh the courses list
-          })
-          .catch((error) => {
+        .then(() => {
+            fetchCourses(); 
+        })
+        .catch((error) => {
             console.error('Error deleting course:', error);
-          });
+        });
     };
 
     return (
@@ -153,7 +145,7 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
                                 <ul>
                                     {studentList.map(student => (
                                         <li key={student._id} className="flex items-center mb-2">
-                                            <Avatar userId={student._id} />
+                                            <Avatar size = 'w-10 h-10' userId={student._id} />
                                             <span className="ml-2">{student.name}</span>
                                         </li>
                                     ))}
