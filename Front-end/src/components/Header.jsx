@@ -62,7 +62,7 @@ const Header = () => {
           <Link to="/" className="ml-0 mr-0 font-bold duration-100 md:ml-12 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">
             Home
           </Link>
-          <Link to="/" className="ml-0 mr-0 font-bold duration-100 md:ml-12 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">
+          <Link to="/courses" className="ml-0 mr-0 font-bold duration-100 md:ml-12 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">
             Courses
           </Link>
           {isLoggedIn && !isAdmin && (
@@ -104,6 +104,7 @@ const Header = () => {
           </ul>
         </div>
       </div>
+      
     </header>
   );
 };

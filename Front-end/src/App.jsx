@@ -6,9 +6,9 @@ import Footer from './components/Footer';
 import SignUpForm from './components/SignUpForm';
 import LoginForm from './components/LoginForm';
 import CoursesDisplay from './components/CoursesDisplay';
-import Course from './components/Course';
 import UserProfile from './components/UserProfile';
 import UserCourses from './components/UserCourses';
+import Home from './components/Home';
 
 
 
@@ -20,10 +20,10 @@ const App = () => {
         <Header />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<CoursesDisplay />} />
+            <Route path="/" element={<Home />} />
             <Route path="/register" element={<SignUpForm />} />
             <Route path="/login" element={<LoginForm />} />
-            //<Route path="/courses/:courseId" element={<Course />} />
+            <Route path="/courses" element={<CoursesDisplay />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/my-courses" element={<UserCourses />} />
           </Routes>
