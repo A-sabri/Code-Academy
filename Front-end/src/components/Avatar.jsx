@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUserById } from '../service/api';
 
-const Avatar = ({ size }) => {
+const Avatar = ({ size, onClick }) => {
     const [user, setUser] = useState({});
     const userId = localStorage.getItem('userId');
 
@@ -21,7 +21,7 @@ const Avatar = ({ size }) => {
     const imageUrl = user.picture;
 
     return (
-        <div className={`relative ${size}`}>
+        <div className={`relative ${size}`} onClick={onClick}>
             <img src={imageUrl} alt="User Avatar" className="rounded-full object-cover" />
         </div>
     );
