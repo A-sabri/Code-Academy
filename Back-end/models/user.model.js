@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
     name: { type: String, required: true, trimp: true, unique: true },
     email: { type: String, required: true, lowercase: true, trimp: true, unique: true },
     password: { type: String, required: true, max: 1024, min: 1 },
-    picture:  { type: String, required: true },
+    picture:  { type: String, default: "http://localhost:5000/uploads/profil/random-user.png" },
     courseIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
     isAdmin : {type : Boolean, default: false}
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const isLoggedIn = !!localStorage.getItem('userId');
+
 const Home = () => {
     return (
         <div className="relative w-full h-full bg-white">
@@ -16,12 +18,22 @@ const Home = () => {
                                     Code Academy is an online coding school dedicated to providing high-quality education in software development. Our mission is to empower individuals by teaching them the skills needed to thrive in the tech industry. <br /> Ready to start your coding journey?
                                 </p>
                                 <div className="flex justify-center w-full max-w-2xl gap-2 mx-auto mt-6">
-                                    <Link to="/register" className="relative inline-flex items-center justify-center w-full px-8 py-3 text-base font-bold leading-6 text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 md:w-auto">
-                                        Get Started
-                                    </Link>
-                                    <Link to="/courses" className="relative inline-flex items-center justify-center w-full px-8 py-3 text-base font-bold leading-6 text-indigo-600 bg-white border border-indigo-600 rounded-md hover:bg-gray-100 md:w-auto">
-                                        View Courses
-                                    </Link>
+                                    {isLoggedIn ? (
+                                        <>
+                                            <Link to="/courses" className="relative inline-flex items-center justify-center w-full px-8 py-3 text-base font-bold leading-6 text-indigo-600 bg-white border border-indigo-600 rounded-md hover:bg-gray-100 md:w-auto">
+                                                View Courses
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link to="/register" className="relative inline-flex items-center justify-center w-full px-8 py-3 text-base font-bold leading-6 text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 md:w-auto">
+                                                Get Started
+                                            </Link>
+                                            <Link to="/courses" className="relative inline-flex items-center justify-center w-full px-8 py-3 text-base font-bold leading-6 text-indigo-600 bg-white border border-indigo-600 rounded-md hover:bg-gray-100 md:w-auto">
+                                                View Courses
+                                            </Link>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

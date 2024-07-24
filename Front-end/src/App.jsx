@@ -9,6 +9,7 @@ import CoursesDisplay from './components/CoursesDisplay';
 import UserProfile from './components/UserProfile';
 import UserCourses from './components/UserCourses';
 import Home from './components/Home';
+import CourseDetails from './components/CourseDetails';
 
 
 
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/courses" element={<CoursesDisplay />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/my-courses" element={<UserCourses />} />
+            <Route path="/course/:courseId" element={<CourseDetails />} />
           </Routes>
         </main>
         <Footer />

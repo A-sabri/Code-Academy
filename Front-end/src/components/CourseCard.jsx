@@ -1,3 +1,4 @@
+/*
 import React, { useState } from 'react';
 import { getAllUsers, addStudentToCourse, removeStudentFromCourse, updateCourse, deleteCourse } from '../service/api';
 import Avatar from './Avatar';
@@ -201,7 +202,7 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
             )}
 
             
-            {/* Modal */}
+            
             {modalIsOpen && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-black bg-opacity-50 absolute inset-0"></div>
@@ -222,5 +223,180 @@ const CourseCard = ({ course, isAdmin, fetchCourses }) => {
 };
 
 export default CourseCard;
+*/
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAllUsers, addStudentToCourse, removeStudentFromCourse, updateCourse, deleteCourse } from '../service/api';
+import Avatar from './Avatar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
+const CourseCard = ({ course, isAdmin, fetchCourses }) => {
+    const navigate = useNavigate();
+    const [toggleList, setToggleList] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [updatedCourse, setUpdatedCourse] = useState(course);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalType, setModalType] = useState('');
+    const [editMode, setEditMode] = useState(false);
+    const [editedCourse, setEditedCourse] = useState({ ...course });
 
+    const studentId = localStorage.getItem('userId');
+
+    const joinCourse = (courseId) => {
+        addStudentToCourse(studentId, courseId)
+        .then(() => {    
+            setUpdatedCourse(prevCourse => ({
+                ...prevCourse,
+                studentIds: [...prevCourse.studentIds, studentId],
+                nbOfStudent: prevCourse.nbOfStudent + 1
+            }));
+
+            setModalMessage('Successfully joined the course!');
+            setModalType('success');
+            setModalIsOpen(true);
+        })
+        .catch(error => {    
+            console.error('Error joining course:', error);
+            setModalMessage('Failed to join the course.');
+            setModalType('error');
+            setModalIsOpen(true);
+        });
+    };
+
+    const leaveCourse = async (courseId) => {
+        try {
+            await removeStudentFromCourse(studentId, courseId);
+            setUpdatedCourse(prevCourse => ({
+                ...prevCourse,
+                studentIds: prevCourse.studentIds.filter(id => id !== studentId),
+                nbOfStudent: prevCourse.nbOfStudent - 1
+            }));
+            setModalMessage('Successfully left the course!');
+            setModalType('success');
+            setModalIsOpen(true);
+        } catch (error) {
+            console.error('Error leaving course:', error);
+            setModalMessage('Failed to leave the course.');
+            setModalType('error');
+            setModalIsOpen(true);
+        }
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
+    const toggleStudentList = () => {
+        setToggleList(!toggleList);
+        getUsers();
+    };
+
+    const getUsers = async () => {
+        getAllUsers()
+        .then(response => setUsers(response.data))
+        .catch(error => console.error('Error fetching students:', error));
+    };
+
+    const studentInCourse = updatedCourse.studentIds;
+    let studentList = users.filter(user => studentInCourse.includes(user._id));
+    const isUserEnrolled = studentInCourse.includes(studentId);
+
+    const handleUpdateCourse = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('name', editedCourse.name);
+        formData.append('description', editedCourse.description);
+        if (editedCourse.image) {
+            formData.append('image', editedCourse.image);
+        }
+        updateCourse(course._id, formData)
+        .then(() => {
+            setUpdatedCourse({ ...updatedCourse, ...editedCourse });
+            setEditMode(false);
+            fetchCourses(); 
+        })
+        .catch((error) => {
+            console.error('Error updating course:', error);
+        });
+    };
+
+    const handleDeleteCourse = () => {
+        deleteCourse(course._id)
+        .then(() => {
+            fetchCourses(); 
+        })
+        .catch((error) => {
+            console.error('Error deleting course:', error);
+        });
+    };
+
+    const goToDetails = () => {
+        navigate(`/course/${course._id}`, { state: { course } });
+    };
+
+    return (
+        <div 
+            className="m-5 bg-stone-50 shadow-lg rounded-lg overflow-hidden p-1.5 relative max-w-md mx-auto transition-transform transform hover:scale-105"
+            onClick={goToDetails}
+            style={{ cursor: 'pointer' }}
+        >
+            <div className="flex flex-col items-center">
+                <img src={course.image} alt="Course" className="w-full h-40 object-cover border border-gray-300 rounded-lg" />
+                <h5 className="text-lg font-bold mt-4">{course.name}</h5>
+            </div>
+            <div className="flex mt-2 p-1.5 text-center">
+                
+                <p className="text-gray-700">{course.description}</p>
+                
+            </div>
+            {isAdmin && (
+                <div className="absolute top-2 right-2 flex flex-col space-y-2">
+                    <button
+                        className="text-gray-500 hover:text-green-700 hover:scale-125 transition-transform duration-200"
+                        onClick={(e) => { e.stopPropagation(); setEditMode(true); }}
+                    >
+                        <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button
+                        className="text-gray-500 hover:text-red-700 hover:scale-125 transition-transform duration-200"
+                        onClick={(e) => { e.stopPropagation(); handleDeleteCourse(); }}
+                    >
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                </div>
+            )}
+            {editMode && (
+                <div className="mt-4">
+                    <input
+                        type="text"
+                        value={editedCourse.name}
+                        onChange={(e) => setEditedCourse({ ...editedCourse, name: e.target.value })}
+                        className="border p-2 mb-4 w-full"
+                        placeholder="Course Name"
+                    />
+                    <textarea
+                        value={editedCourse.description}
+                        onChange={(e) => setEditedCourse({ ...editedCourse, description: e.target.value })}
+                        className="border p-2 mb-4 w-full"
+                        placeholder="Course Description"
+                    />
+                    <input
+                        type="file"
+                        onChange={(e) => setEditedCourse({ ...editedCourse, image: e.target.files[0] })}
+                        className="border p-2 mb-4 w-full"
+                    />
+                    <button
+                        className="bg-green-500 text-white w-full py-2 rounded hover:bg-green-600"
+                        onClick={handleUpdateCourse}
+                    >
+                        Save
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default CourseCard;

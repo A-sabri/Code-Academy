@@ -1,6 +1,6 @@
 // src/components/LoginForm.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../service/api';
 
 
@@ -25,8 +25,8 @@ const LoginForm = () => {
       const response = await login(formData);
 
       if (response.status === 200) {
-        localStorage.setItem('token',response.data.token);
-        localStorage.setItem('userId',response.data.userId);
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userId', response.data.userId);
         navigate('/');
       } else {
         console.error('Failed to log in');
@@ -37,8 +37,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md">
+    <div className=" bg-stone-50 max-w-md mx-auto m-20">
+      <form onSubmit={handleSubmit} className="p-8 rounded-lg shadow-md">
         <div className="flex justify-center items-center">
           <img src="/code-academy.svg" alt="Logo" className="w-28 h-28 rounded-full cursor-pointer" />
         </div>
@@ -70,6 +70,10 @@ const LoginForm = () => {
         <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700">
           Log In
         </button>
+        <p className="mt-10 text-center text-sm text-gray-500">
+          vous n'avez pas de compte ?<br />
+          <Link to="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Inscrivez vous</Link>
+        </p>
       </form>
     </div>
   );

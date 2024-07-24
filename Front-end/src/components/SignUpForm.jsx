@@ -1,6 +1,6 @@
 // src/components/SignUpForm.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../service/api';
 
 const SignUpForm = () => {
@@ -35,7 +35,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
+    <div className="max-w-md mx-auto m-20">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md">
         <div className="flex justify-center items-center">
           <img src="/code-academy.svg" alt="Logo" className="w-28 h-28 rounded-full cursor-pointer" />
@@ -80,6 +80,10 @@ const SignUpForm = () => {
         <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700">
           Sign Up
         </button>
+        <p className="mt-10 text-center text-sm text-gray-500">
+          vous avez deja un compte ?<br />
+          <Link to="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">connectez vous</Link>
+        </p>
       </form>
     </div>
   );
