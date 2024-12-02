@@ -22,7 +22,7 @@ const Avatar = ({ size, onClick }) => {
 
     return (
         <div className={`relative ${size}`} onClick={onClick}>
-            <img src={imageUrl} alt="User Avatar" className="rounded-full object-cover" />
+            <img src={imageUrl} alt="User Avatar" className="rounded-full w-full h-full object-cover" />
         </div>
     );
 };

@@ -5,6 +5,7 @@ const courseSchema = mongoose.Schema({
     description: { type: String, required: true },
     image:  { type: String, required: true },
     nbOfStudent: { type: Number, default: 0 },
+    time: { type: Number },
     studentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
     },  
     { timestamps: true }
